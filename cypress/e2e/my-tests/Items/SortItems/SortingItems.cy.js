@@ -14,6 +14,7 @@ describe("login standard_user into the website and check sort items", () => {
     getLoginProcess();
   });
 
+  console.log("hi");
   it("Sort items a TO z", () => {
     getSelectorAndCheckAZSort("az", AZshirt);
   });

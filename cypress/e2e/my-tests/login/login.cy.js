@@ -1,53 +1,41 @@
 /// <reference types="cypress" />
 
-const PASSWORD = "secret_sauce";
+import {
+  getLoginFieldsProcess,
+  getLoginUrl,
+  getLoginError,
+  PASSWORD,
+  STANDARD_USER,
+  LOCKED_USER,
+  PROBLEM_USER,
+  PERFORMANCE_USER,
+  locked_user_error,
+} from "../../Pages/login/getLoginFields";
 
-const STANDARD = "standard_user";
-const LOCKED = "locked_out_user";
-const PROBLEM = "problem_user";
-const PERFORMANCE = "performance_glitch_user";
+const mainPageUrl = Cypress.env("mainPageUrl");
 
 describe("login", () => {
   beforeEach(() => {
-    cy.visit("https://www.saucedemo.com/v1/");
-  });
-
-  it("displays username and password field", () => {
-    cy.get("[data-test=username]").should("exist");
-    cy.get("[data-test=password]").should("exist");
+    cy.visit("/");
   });
 
   it("login standard_user into the website", () => {
-    cy.get("[data-test=username]").type(STANDARD);
-    cy.get("[data-test=password]").type(PASSWORD);
-    cy.get("#login-button").click();
-    cy.get(".app_logo").should("exist");
-    cy.url("https://www.saucedemo.com/v1/inventory.html").should("exist");
+    getLoginFieldsProcess(STANDARD_USER, PASSWORD);
+    getLoginUrl(mainPageUrl);
   });
 
   it("login locked_out_user into the website", () => {
-    cy.get("[data-test=username]").type(LOCKED);
-    cy.get("[data-test=password]").type(PASSWORD);
-    cy.get("#login-button").click();
-    cy.get("[data-test=error]").should(
-      "have.text",
-      "Epic sadface: Sorry, this user has been locked out."
-    );
+    getLoginFieldsProcess(LOCKED_USER, PASSWORD);
+    getLoginError("[data-test=error]", locked_user_error);
   });
 
-  it("login problem_user into the website", () => {
-    cy.get("[data-test=username]").type(PROBLEM);
-    cy.get("[data-test=password]").type(PASSWORD);
-    cy.get("#login-button").click();
-    cy.get(".app_logo").should("exist");
-    cy.url("https://www.saucedemo.com/v1/inventory.html").should("exist");
+  it("login problem_USER_user into the website", () => {
+    getLoginFieldsProcess(PROBLEM_USER, PASSWORD);
+    getLoginUrl(mainPageUrl);
   });
 
   it("login performance_glitch_user into the website", () => {
-    cy.get("[data-test=username]").type(PERFORMANCE);
-    cy.get("[data-test=password]").type(PASSWORD);
-    cy.get("#login-button").click();
-    cy.get(".app_logo").should("exist");
-    cy.url("https://www.saucedemo.com/v1/inventory.html").should("exist");
+    getLoginFieldsProcess(PERFORMANCE_USER, PASSWORD);
+    getLoginUrl(mainPageUrl);
   });
 });

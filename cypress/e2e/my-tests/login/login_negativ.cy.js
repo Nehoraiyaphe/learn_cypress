@@ -1,57 +1,38 @@
 /// <reference types="cypress" />
 
-const PASSWORD = "secret_sauce";
-
-const STANDARD = "standard_user";
-const LOCKED = "locked_out_user";
-const PROBLEM = "problem_user";
-const PERFORMANCE = "performance_glitch_user";
+import {
+  getLoginFieldsNegativeProcess,
+  wrong_info_error,
+  STANDARD_USER,
+  WRONG_USER,
+  PASSWORD,
+  WRONG_PASSWORD,
+  no_user_error,
+  no_password_error,
+} from "../../Pages/login/getLoginNegative";
 
 describe("login fails", () => {
   beforeEach(() => {
-    cy.visit("https://www.saucedemo.com/v1/");
-  });
-
-  it("displays username and password field", () => {
-    cy.get("[data-test=username]").should("exist");
-    cy.get("[data-test=password]").should("exist");
+    cy.visit("/");
   });
 
   it("login with wrong username", () => {
-    cy.get("[data-test=username]").type("wrong_username");
-    cy.get("[data-test=password]").type(PASSWORD);
-    cy.get("#login-button").click();
-    cy.get("[data-test=error]").should(
-      "have.text",
-      "Epic sadface: Username and password do not match any user in this service"
-    );
+    getLoginFieldsNegativeProcess(WRONG_USER, PASSWORD, wrong_info_error);
   });
 
   it("login with wrong password", () => {
-    cy.get("[data-test=username]").type(STANDARD);
-    cy.get("[data-test=password]").type("wrong_password");
-    cy.get("#login-button").click();
-    cy.get("[data-test=error]").should(
-      "have.text",
-      "Epic sadface: Username and password do not match any user in this service"
+    getLoginFieldsNegativeProcess(
+      STANDARD_USER,
+      WRONG_PASSWORD,
+      wrong_info_error
     );
   });
 
   it("login with username and no password", () => {
-    cy.get("[data-test=username]").type(STANDARD);
-    cy.get("#login-button").click();
-    cy.get("[data-test=error]").should(
-      "have.text",
-      "Epic sadface: Password is required"
-    );
+    getLoginFieldsNegativeProcess(STANDARD_USER, "", no_password_error);
   });
 
   it("login with password and no username", () => {
-    cy.get("[data-test=password]").type(PASSWORD);
-    cy.get("#login-button").click();
-    cy.get("[data-test=error]").should(
-      "have.text",
-      "Epic sadface: Username is required"
-    );
+    getLoginFieldsNegativeProcess("", PASSWORD, no_user_error);
   });
 });
